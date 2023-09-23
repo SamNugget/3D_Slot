@@ -12,24 +12,38 @@ namespace Slot
 
         [SerializeField] private string _currency = "fun";
         public static string currency { get { return singleton._currency; } }
-        [SerializeField] private float balance = 1000f;
-        [SerializeField] private float bet = 1f;
+        [SerializeField] private float _balance = 1000f;
+        [SerializeField] private float _bet = 1f;
+        public static float bet { get { return singleton._bet; } }
 
 
         public static bool sufficientFunds()
         {
-            if (singleton.balance > singleton.bet)
+            if (singleton._balance > singleton._bet)
             {
-                singleton.balance -= singleton.bet;
+                singleton._balance -= singleton._bet;
                 return true;
             }
             return false;
         }
 
+        public static void updateBalance(float change)
+        {
+            singleton._balance += change;
+
+            // push via banking API
+        }
+
+        public static void pushToUI()
+        {
+            UIManager.setBalance(singleton._balance);
+            UIManager.setBet(singleton._bet);
+        }
+
 
         public void build()
         {
-            UIManager.setBalance(balance);
+            UIManager.setBalance(_balance);
             UIManager.setBet(bet);
         }
 

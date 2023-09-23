@@ -29,7 +29,12 @@ namespace Slot
             return symbolTypes[iD];
         }
 
-        public static SymbolType getRandom()
+        public static SymbolType[] getSymbolTypes()
+        {
+            return singleton._symbolTypes;
+        }
+
+        public static SymbolType getWeightedRandom()
         {
             // todo: weighted according to totals in strip
             int i = Random.Range(0, singleton._symbolTypes.Length);

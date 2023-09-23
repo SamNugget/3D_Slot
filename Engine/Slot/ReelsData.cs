@@ -12,6 +12,29 @@ namespace Slot
         [SerializeField] private string[] _strips;
         public static List<SymbolType[]> strips;
 
+        [SerializeField] private int[] _stagger;
+        public static int[] stagger { get { return singleton._stagger; } }
+
+
+        public static SymbolType[] getSection(int stripIndex, int reelPosition, int height)
+        {
+            SymbolType[] strip = strips[stripIndex];
+            SymbolType[] section = new SymbolType[height];
+
+            for (int i = 0; i < height; i++)
+            {
+                int reelIndex = reelPosition + i;
+                if (reelIndex >= strip.Length)
+                {
+                    reelIndex -= strip.Length;
+                }
+
+                section[i] = strip[reelIndex];
+            }
+
+            return section;
+        }
+
 
         public void build()
         {
@@ -28,6 +51,8 @@ namespace Slot
                     string symbolID = symbolIDs[i];
                     symbols[i] = Symbols.getSymbolType(symbolID);
                 }
+
+                strips.Add(symbols);
             }
         }
 
