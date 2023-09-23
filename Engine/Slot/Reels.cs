@@ -83,6 +83,9 @@ namespace Slot
             }
 
 
+            // todo: play win animation
+
+
             // when all spinning is done
             Money.pushToUI();
 

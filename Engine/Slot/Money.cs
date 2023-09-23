@@ -19,12 +19,7 @@ namespace Slot
 
         public static bool sufficientFunds()
         {
-            if (singleton._balance > singleton._bet)
-            {
-                singleton._balance -= singleton._bet;
-                return true;
-            }
-            return false;
+            return (singleton._balance > singleton._bet);
         }
 
         public static void updateBalance(float change)

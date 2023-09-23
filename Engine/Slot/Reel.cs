@@ -99,6 +99,9 @@ namespace Slot
                 }
 
 
+                // todo: centre the positions of all the symbols
+
+
                 yield return null;
                 delay -= Time.deltaTime;
             }
