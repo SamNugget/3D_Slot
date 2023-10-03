@@ -5,27 +5,30 @@ using UnityEngine.UI;
 
 namespace Slot
 {
-    public class Reel : MonoBehaviour, Buildable
+    public class Reel : Buildable
     {
         [SerializeField] private int height;
         [SerializeField] private int strip;
 
-        [HideInInspector] public Symbol[] symbols;
+        [HideInInspector] public List<Symbol> symbols;
+        private Symbol bottom { get { return symbols[symbols.Count - 1]; } }
+        List<Symbol> toRemove = new List<Symbol>();
 
         public bool isSpinning = false;
 
 
-        public void build()
+        public override void build()
         {
             Vector2 size = Symbols.size;
 
-            symbols = new Symbol[height + 2];
-            for (int i = 0; i < symbols.Length; i++)
+            symbols = new List<Symbol>();
+            for (int i = 0; i < height + 2; i++)
             {
-                symbols[i] = createSymbol(Symbols.getWeightedRandom());
+                Symbol s = createSymbol(Symbols.getWeightedRandom());
+                symbols.Insert(i, s);
 
                 Vector3 pos = new Vector3(0f, (i - 1) * -size.y, 0f);
-                symbols[i].transform.localPosition = pos;
+                s.transform.localPosition = pos;
             }
         }
 
@@ -47,7 +50,9 @@ namespace Slot
             Image i = symbol.GetComponent<Image>();
             i.sprite = newType.sprite;
 
-            symbol.transform.localPosition += new Vector3(0f, (height + 2) * Symbols.size.y, 0f);
+            symbol.transform.localPosition += new Vector3(0f, (height + 2) * Symbols.size.y);
+
+            toRemove.Add(symbol);
         }
 
         public IEnumerator spin(float delay, int stagger, float speed)
@@ -62,7 +67,7 @@ namespace Slot
             {
                 float change = speed * Time.deltaTime;
 
-                for (int i = 0; i < symbols.Length; i++)
+                for (int i = 0; i < symbols.Count; i++)
                 {
                     // move each symbol
                     Symbol symbol = symbols[i];
@@ -99,12 +104,32 @@ namespace Slot
                 }
 
 
-                // todo: centre the positions of all the symbols
+                foreach (Symbol r in toRemove)
+                {
+                    symbols.Remove(r);
+                    symbols.Insert(0, r);
+                }
 
 
                 yield return null;
                 delay -= Time.deltaTime;
             }
+
+
+            yield return _snap();
+        }
+
+        private IEnumerator _snap()
+        {
+            float offset = symbols[0].transform.localPosition.y;
+            foreach (Symbol s in symbols)
+            {
+                s.transform.localPosition -= new Vector3(0, offset);
+            }
+
+            // todo: gradual return
+
+            yield return null;
         }
     }
 }

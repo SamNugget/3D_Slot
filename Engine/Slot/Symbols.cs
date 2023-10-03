@@ -4,9 +4,20 @@ using UnityEngine;
 
 namespace Slot
 {
-    public class Symbols : MonoBehaviour, Buildable
+    public class Symbols : BuildableSingleton
     {
         public static Symbols singleton;
+        protected override Buildable _singleton
+        {
+            set
+            {
+                if (singleton != null)
+                {
+                    Debug.LogError("Multiple Symbols singletons");
+                }
+                singleton = (Symbols)value;
+            }
+        }
 
         [SerializeField] private Vector2 _size;
         public static Vector2 size { get { return singleton._size; } }
@@ -42,7 +53,7 @@ namespace Slot
         }
 
 
-        public void build()
+        public override void build()
         {
             symbolTypes = new Dictionary<string, SymbolType>();
 

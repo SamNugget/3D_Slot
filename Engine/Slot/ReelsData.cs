@@ -4,9 +4,20 @@ using UnityEngine;
 
 namespace Slot
 {
-    public class ReelsData : MonoBehaviour, Buildable
+    public class ReelsData : BuildableSingleton
     {
         public static ReelsData singleton;
+        protected override Buildable _singleton
+        {
+            set
+            {
+                if (singleton != null)
+                {
+                    Debug.LogError("Multiple ReelsData singletons");
+                }
+                singleton = (ReelsData)value;
+            }
+        }
 
 
         [SerializeField] private string[] _strips;
@@ -36,7 +47,7 @@ namespace Slot
         }
 
 
-        public void build()
+        public override void build()
         {
             strips = new List<SymbolType[]>();
 

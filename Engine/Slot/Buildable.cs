@@ -1,4 +1,6 @@
-public interface Buildable
+using UnityEngine;
+
+public abstract class Buildable : MonoBehaviour
 {
-    public void build();
+    public abstract void build();
 }

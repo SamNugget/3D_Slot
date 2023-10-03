@@ -5,9 +5,20 @@ using UI;
 
 namespace Slot
 {
-    public class Money : MonoBehaviour, Buildable
+    public class Money : BuildableSingleton
     {
         public static Money singleton;
+        protected override Buildable _singleton
+        {
+            set
+            {
+                if (singleton != null)
+                {
+                    Debug.LogError("Multiple Money singletons");
+                }
+                singleton = (Money)value;
+            }
+        }
 
 
         [SerializeField] private string _currency = "fun";
@@ -36,7 +47,7 @@ namespace Slot
         }
 
 
-        public void build()
+        public override void build()
         {
             UIManager.setBalance(_balance);
             UIManager.setBet(bet);
