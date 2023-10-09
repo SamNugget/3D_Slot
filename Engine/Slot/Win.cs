@@ -20,7 +20,6 @@ namespace Slot
             }
         }
 
-        [SerializeField] private Animator winAnimator;
         [SerializeField] private WinStage[] winStages;
 
 
@@ -39,10 +38,7 @@ namespace Slot
             WinStage winStage = singleton._getStage(winnings);
 
             // play anim for win
-            Animator anim = singleton.winAnimator;
-            anim.Play(winStage.animName);
-            AnimatorStateInfo info = anim.GetCurrentAnimatorStateInfo(0);
-            yield return new WaitForSeconds(info.length);
+            yield return winStage.animate();
         }
 
         private WinStage _getStage(float winnings)

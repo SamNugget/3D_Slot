@@ -127,7 +127,8 @@ namespace Slot
                 Symbols.singleton,
                 ReelsData.singleton,
                 Money.singleton,
-                Reels.singleton
+                Reels.singleton,
+                Money.singleton
             };
             toBuild.AddRange(reels);
 
