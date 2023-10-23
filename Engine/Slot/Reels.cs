@@ -5,9 +5,9 @@ using Server;
 
 namespace Slot
 {
-    public class Reels : BuildableSingleton, ISlotClient
+    public class Reels : BuildableSingleton
     {
-        private static Reels singleton;
+        public static Reels singleton;
         protected override Buildable _singleton
         {
             set
@@ -20,44 +20,18 @@ namespace Slot
             }
         }
 
-        private IServer server;
-
         [SerializeField] private Reel[] reels;
         [SerializeField] private float _spinDelay;
         public static float spinDelay { get { return singleton._spinDelay; } }
         [SerializeField] private float spinSpeed;
 
-        private static bool isSpinning = false;
-        private static bool isBlocked = false;
-        public static Result spinResult;
+        public static bool isSpinning { get { return _isSpinning; } }
+        private static bool _isSpinning = false;
 
 
-        public void recieveResult(Result result)
+        public static void startSpin()
         {
-            spinResult = result;
-        }
-
-        public static bool spin()
-        {
-            if (isSpinning || isBlocked || !Money.sufficientFunds())
-                return false;
-
-            singleton.StartCoroutine(_spin());
-            return true;
-        }
-
-        private static IEnumerator _spin()
-        {
-            isSpinning = true;
-
-            // place bet
-            Money.updateBalance(-Money.bet);
-            Money.pushToUI();
-
-            // request result from server
-            spinResult = null;
-            singleton.server.requestResult(singleton, Money.bet);
-
+            _isSpinning = true;
 
             // start spinning the reels
             Reel[] reels = singleton.reels;
@@ -70,30 +44,9 @@ namespace Slot
                 cumStagger += stagger[i];
                 reel.StartCoroutine(reel.spin(spinDelay, cumStagger, speed));
             }
-
-
-            // wait for result from server
-            while (spinResult == null)
-            {
-                yield return null;
-            }
-            Money.updateBalance(spinResult.winnings);
-
-
-            // wait for spinning to stop
-            yield return _waitForReels();
-
-
-            yield return Win.play();
-
-
-            // when all spinning is done
-            Money.pushToUI();
-
-            isSpinning = false;
         }
 
-        private static IEnumerator _waitForReels()
+        public static IEnumerator waitForLand()
         {
             bool spinning = true;
             while (spinning)
@@ -109,43 +62,33 @@ namespace Slot
                     }
                 }
             }
+
+            _isSpinning = false;
+        }
+
+        public void setSymbolVisibility(bool visible)
+        {
+            foreach (Reel r in reels)
+            {
+                r.setSymbolVisibility(visible);
+            }
         }
 
 
         public override void build()
         {
-            server = transform.parent.Find("Server").GetComponent<IServer>();
+            StartCoroutine(_build());
         }
 
-
-        private void Start()
+        private IEnumerator _build()
         {
-            // objects to be configured, this alternative to the
-            // Unity Start() function imposes an order
-            List<Buildable> toBuild = new List<Buildable>()
-            {
-                Symbols.singleton,
-                ReelsData.singleton,
-                Money.singleton,
-                Reels.singleton,
-                Money.singleton
-            };
-            toBuild.AddRange(reels);
+            foreach (Reel r in reels)
+                r.build();
 
-            foreach (Buildable b in toBuild)
-            {
-                if (b == null)
-                    Debug.LogError("Trying to build a null object, make sure singletons are set in Awake().");
-                else
-                    b.build();
-            }
-
-
-            Transform root = transform.parent;
-            Buildable[] buildables = root.GetComponentsInChildren<Buildable>();
-            int remaining = buildables.Length - toBuild.Count;
-            if (remaining != 0)
-                Debug.LogWarning(remaining + " buildable(s) is/are not being built.");
+            setSymbolVisibility(false);
+            yield return new WaitForSeconds(8f); // this is not very clean
+            setSymbolVisibility(true);
+            Session.isBlocked = false;
         }
     }
 }

@@ -42,16 +42,18 @@ namespace Slot
             return s;
         }
 
+        public void setSymbolVisibility(bool visible)
+        {
+            foreach (Symbol s in symbols)
+            {
+                s.visible = visible;
+            }
+        }
+
         // todo: probably won't work after extending Symbol, need to replace component, bad at runtime
         private void resetSymbol(Symbol symbol, SymbolType newType)
         {
-            symbol.type = newType;
-
-            Image i = symbol.GetComponent<Image>();
-            i.sprite = newType.sprite;
-
-            symbol.transform.localPosition += new Vector3(0f, (height + 2) * Symbols.size.y);
-
+            symbol.reset(newType, height);
             toRemove.Add(symbol);
         }
 
@@ -76,7 +78,7 @@ namespace Slot
                     // check if it has gone too far
                     if (symbol.transform.localPosition.y < yMin)
                     {
-                        if (delay > 0f || Reels.spinResult == null)
+                        if (delay > 0f || Session.spinResult == null)
                         {
                             resetSymbol(symbol, Symbols.getWeightedRandom());
                         }
@@ -87,7 +89,7 @@ namespace Slot
                         }
                         else
                         {
-                            int reelPosition = Reels.spinResult.reelPositions[strip];
+                            int reelPosition = Session.spinResult.reelPositions[strip];
                             SymbolType[] stripSection = ReelsData.getSection(strip, reelPosition, toDisplay);
 
                             if (toDisplay > 0)

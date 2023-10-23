@@ -31,7 +31,7 @@ namespace MockServer
             }
 
 
-            client.recieveResult(new Result() { reelPositions = reelPositions, winnings = 1f });
+            client.recieveResult(new Result() { reelPositions = reelPositions, winnings = 20f });
         }
 
 

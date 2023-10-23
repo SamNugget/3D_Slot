@@ -36,7 +36,7 @@ namespace Slot
                 }
 
                 Animator am = anim.animator;
-                am.Play(anim.name);
+                am.Play(anim.name, 0, 0f);
                 AnimatorStateInfo info = am.GetCurrentAnimatorStateInfo(0);
             }
 

@@ -26,7 +26,7 @@ namespace UI
 
         public void spinPressed()
         {
-            Reels.spin();
+            Session.spin();
         }
 
 

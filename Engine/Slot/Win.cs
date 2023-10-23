@@ -25,7 +25,7 @@ namespace Slot
 
         public static IEnumerator play()
         {
-            Result spinResult = Reels.spinResult;
+            Result spinResult = Session.spinResult;
             float winnings = spinResult.winnings;
 
 
