@@ -20,6 +20,7 @@ namespace Slot
             }
         }
 
+        [SerializeField] private float highlightTime;
         [SerializeField] private WinStage[] winStages;
 
 
@@ -35,10 +36,18 @@ namespace Slot
             }
 
 
-            WinStage winStage = singleton._getStage(winnings);
+            // highlight win symbols
+            Reels.highlightSymbols(spinResult.lineWins);
+            yield return new WaitForSeconds(singleton.highlightTime);
 
+
+            WinStage winStage = singleton._getStage(winnings);
             // play anim for win
             yield return winStage.animate();
+
+
+            // reset win symbols
+            Reels.highlightSymbols();
         }
 
         private WinStage _getStage(float winnings)

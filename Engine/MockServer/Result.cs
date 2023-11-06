@@ -8,7 +8,14 @@ namespace Server
     {
         public float winnings;
         public int[] reelPositions;
-        // public string[,] symbols;
+        public string[][] symbols;
+        public LineWin[] lineWins;
+    }
+
+    public class LineWin
+    {
+        public float winAmount;
+        public int[][] symbolPositions;
     }
 }
 

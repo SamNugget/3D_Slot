@@ -10,6 +10,8 @@ namespace Server
 
         [SerializeField] private float _adjacent;
         public static float adjacent { get { return singleton._adjacent; } }
+        [SerializeField] private int _rows;
+        public static int rows { get { return singleton._rows; } }
 
 
         private void Awake()

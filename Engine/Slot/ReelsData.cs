@@ -27,7 +27,26 @@ namespace Slot
         public static int[] stagger { get { return singleton._stagger; } }
 
 
-        public static SymbolType[] getSection(int stripIndex, int reelPosition, int height)
+        public static string[] getSection(int stripIndex, int reelPosition, int height)
+        {
+            SymbolType[] strip = strips[stripIndex];
+            string[] section = new string[height];
+
+            for (int i = 0; i < height; i++)
+            {
+                int reelIndex = reelPosition + i;
+                if (reelIndex >= strip.Length)
+                {
+                    reelIndex -= strip.Length;
+                }
+
+                section[i] = strip[reelIndex].iD;
+            }
+
+            return section;
+        }
+
+        public static SymbolType[] getSectionAsTypes(int stripIndex, int reelPosition, int height)
         {
             SymbolType[] strip = strips[stripIndex];
             SymbolType[] section = new SymbolType[height];

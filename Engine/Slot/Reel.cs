@@ -7,7 +7,7 @@ namespace Slot
 {
     public class Reel : Buildable
     {
-        [SerializeField] private int height;
+        public int height;
         [SerializeField] private int strip;
 
         [HideInInspector] public List<Symbol> symbols;
@@ -90,7 +90,7 @@ namespace Slot
                         else
                         {
                             int reelPosition = Session.spinResult.reelPositions[strip];
-                            SymbolType[] stripSection = ReelsData.getSection(strip, reelPosition, toDisplay);
+                            SymbolType[] stripSection = ReelsData.getSectionAsTypes(strip, reelPosition, toDisplay);
 
                             if (toDisplay > 0)
                             {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Server;
+using UnityEngine.UI;
 
 namespace Slot
 {
@@ -24,6 +25,7 @@ namespace Slot
         [SerializeField] private float _spinDelay;
         public static float spinDelay { get { return singleton._spinDelay; } }
         [SerializeField] private float spinSpeed;
+        [SerializeField] private Color dimmedColour;
 
         public static bool isSpinning { get { return _isSpinning; } }
         private static bool _isSpinning = false;
@@ -71,6 +73,38 @@ namespace Slot
             foreach (Reel r in reels)
             {
                 r.setSymbolVisibility(visible);
+            }
+        }
+
+        public static void highlightSymbols(LineWin[] lineWins = null)
+        {
+            Reel[] reels = singleton.reels;
+            Color baseColour = lineWins == null ? Color.white : singleton.dimmedColour;
+
+            for (int x = 0; x < reels.Length; x++)
+            {
+                Reel reel = reels[x];
+
+                for (int y = 0; y < reel.height; y++)
+                {
+                    Image image = reel.symbols[y].GetComponent<Image>();
+                    image.color = baseColour;
+                }
+            }
+
+            if (lineWins != null)
+            {
+                for (int i = 0; i < lineWins.Length; i++)
+                {
+                    int[][] symbolPositions = lineWins[i].symbolPositions;
+
+                    for (int j = 0; j < symbolPositions.Length; j++)
+                    {
+                        int[] pos = symbolPositions[j];
+                        Image image = reels[pos[0]].symbols[pos[1]].GetComponent<Image>();
+                        image.color = Color.white;
+                    }
+                }
             }
         }
 
