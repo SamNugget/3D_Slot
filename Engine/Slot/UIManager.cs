@@ -13,6 +13,8 @@ namespace UI
         [SerializeField] private TextMeshProUGUI balance;
         [SerializeField] private TextMeshProUGUI bet;
 
+        [SerializeField] private Animator spinAnimator;
+
 
         public static void setBalance(float balance)
         {
@@ -27,6 +29,10 @@ namespace UI
         public void spinPressed()
         {
             Session.spin();
+            if (spinAnimator)
+            {
+                spinAnimator.Play("Spin", 0, 0);
+            }
         }
 
 

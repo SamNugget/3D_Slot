@@ -119,10 +119,9 @@ namespace Slot
             foreach (Reel r in reels)
                 r.build();
 
-            setSymbolVisibility(false);
-            yield return new WaitForSeconds(8f); // this is not very clean
-            setSymbolVisibility(true);
+            //setSymbolVisibility(true);
             Session.isBlocked = false;
+            yield break;
         }
     }
 }
