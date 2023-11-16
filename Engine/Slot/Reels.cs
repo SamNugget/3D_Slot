@@ -87,8 +87,7 @@ namespace Slot
 
                 for (int y = 0; y < reel.height; y++)
                 {
-                    Image image = reel.symbols[y].GetComponent<Image>();
-                    image.color = baseColour;
+                    reel.symbols[y].image.color = baseColour;
                 }
             }
 
@@ -101,8 +100,7 @@ namespace Slot
                     for (int j = 0; j < symbolPositions.Length; j++)
                     {
                         int[] pos = symbolPositions[j];
-                        Image image = reels[pos[0]].symbols[pos[1]].GetComponent<Image>();
-                        image.color = Color.white;
+                        reels[pos[0]].symbols[pos[1]].image.color = Color.white;
                     }
                 }
             }

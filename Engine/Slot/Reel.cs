@@ -37,8 +37,7 @@ namespace Slot
             GameObject g = Instantiate(Symbols.fab, transform);
             Symbol s = g.GetComponent<Symbol>();
             s.type = type;
-            Image i = g.GetComponent<Image>();
-            i.sprite = type.sprite;
+            s.image.sprite = type.sprite;
             return s;
         }
 

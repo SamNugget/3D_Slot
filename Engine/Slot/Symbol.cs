@@ -8,14 +8,14 @@ namespace Slot
     public class Symbol : MonoBehaviour
     {
         [HideInInspector] public SymbolType type;
+        [HideInInspector] public Image image;
 
         public void reset(SymbolType newType, float reelHeight)
         {
             type = newType;
 
-            Image i = GetComponent<Image>();
-            i.enabled = true;
-            i.sprite = newType.sprite;
+            image.enabled = true;
+            image.sprite = newType.sprite;
 
             transform.localPosition += new Vector3(0f, (reelHeight + 2) * Symbols.size.y);
         }
@@ -24,12 +24,17 @@ namespace Slot
         {
             get
             {
-                return GetComponent<Image>().enabled;
+                return image.enabled;
             }
             set
             {
-                GetComponent<Image>().enabled = value;
+                image.enabled = value;
             }
+        }
+
+        private void Awake()
+        {
+            image = transform.GetChild(1).GetComponent<Image>();
         }
     }
 }
