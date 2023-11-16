@@ -95,6 +95,12 @@ namespace Slot
                             {
                                 resetSymbol(symbol, stripSection[toDisplay - 1]);
                                 toDisplay--;
+                                if (toDisplay == 0)
+                                {
+                                    SymbolType symbolType = symbol.type;
+                                    Transform spawnPoint = Reels.singleton.ingredientSpawnPoints[strip];
+                                    Instantiate(symbolType.ingredientFab, spawnPoint);
+                                }
                             }
                             else
                             {

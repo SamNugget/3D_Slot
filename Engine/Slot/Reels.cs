@@ -22,6 +22,7 @@ namespace Slot
         }
 
         [SerializeField] private Reel[] reels;
+        public Transform[] ingredientSpawnPoints;
         [SerializeField] private float _spinDelay;
         public static float spinDelay { get { return singleton._spinDelay; } }
         [SerializeField] private float spinSpeed;

@@ -11,5 +11,6 @@ namespace Slot
         public string iD;
         public Sprite sprite;
         public float value;
+        public GameObject ingredientFab;
     }
 }
