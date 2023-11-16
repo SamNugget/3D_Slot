@@ -11,6 +11,9 @@ namespace Slot
         public string iD;
         public Sprite sprite;
         public float value;
+
+        [Header("Burger Settings")]
         public GameObject ingredientFab;
+        public bool randomRotation = false;
     }
 }

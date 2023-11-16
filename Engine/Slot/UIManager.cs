@@ -28,8 +28,7 @@ namespace UI
 
         public void spinPressed()
         {
-            Session.spin();
-            if (spinAnimator)
+            if (Session.spin() && spinAnimator)
             {
                 spinAnimator.Play("Spin", 0, 0);
             }

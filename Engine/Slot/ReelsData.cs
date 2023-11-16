@@ -46,6 +46,19 @@ namespace Slot
             return section;
         }
 
+        public static int getReelPosOfSymbol(int stripIndex, SymbolType symbolType)
+        {
+            SymbolType[] strip = strips[stripIndex];
+            for (int i = 0; i < strip.Length; i++)
+            {
+                if (strip[i] == symbolType)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         public static SymbolType[] getSectionAsTypes(int stripIndex, int reelPosition, int height)
         {
             SymbolType[] strip = strips[stripIndex];

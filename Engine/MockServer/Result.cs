@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Slot;
 
 namespace Server
 {
@@ -10,6 +11,7 @@ namespace Server
         public int[] reelPositions;
         public string[][] symbols;
         public LineWin[] lineWins;
+        public Reels.BurgerState[] burgerStates;
     }
 
     public class LineWin

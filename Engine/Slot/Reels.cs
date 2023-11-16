@@ -22,11 +22,21 @@ namespace Slot
         }
 
         [SerializeField] private Reel[] reels;
-        public Transform[] ingredientSpawnPoints;
         [SerializeField] private float _spinDelay;
         public static float spinDelay { get { return singleton._spinDelay; } }
         [SerializeField] private float spinSpeed;
         [SerializeField] private Color dimmedColour;
+
+        [Header("Burger Settings")]
+        public Transform[] ingredientSpawnPoints;
+        public BurgerState[] burgerStates = new BurgerState[3];
+        [System.Serializable]
+        public class BurgerState
+        {
+            public bool reset = true;
+            public int height = 0;
+        }
+
 
         public static bool isSpinning { get { return _isSpinning; } }
         private static bool _isSpinning = false;
@@ -43,6 +53,15 @@ namespace Slot
             float speed = singleton.spinSpeed * Symbols.size.y;
             for (int i = 0; i < reels.Length; i++)
             {
+                if (singleton.burgerStates[i].reset)
+                {
+                    Transform spawnPoint = singleton.ingredientSpawnPoints[i];
+                    for (int j = spawnPoint.childCount - 1; j >= 0; j--)
+                    {
+                        Destroy(spawnPoint.GetChild(j).gameObject);
+                    }
+                }
+
                 Reel reel = reels[i];
                 cumStagger += stagger[i];
                 reel.StartCoroutine(reel.spin(spinDelay, cumStagger, speed));

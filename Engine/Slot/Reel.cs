@@ -93,13 +93,26 @@ namespace Slot
 
                             if (toDisplay > 0)
                             {
-                                resetSymbol(symbol, stripSection[toDisplay - 1]);
                                 toDisplay--;
                                 if (toDisplay == 0)
                                 {
-                                    SymbolType symbolType = symbol.type;
+                                    SymbolType symbolType = Symbols.getSymbolType(Session.spinResult.symbols[strip][0]);
+                                    resetSymbol(symbol, symbolType);
+
                                     Transform spawnPoint = Reels.singleton.ingredientSpawnPoints[strip];
-                                    Instantiate(symbolType.ingredientFab, spawnPoint);
+                                    Transform t = Instantiate(symbolType.ingredientFab, spawnPoint).transform;
+                                    if (symbolType.randomRotation)
+                                    {
+                                        t.localRotation = Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 0f));
+                                    }
+                                    if (symbolType.iD == "AV" || symbolType.iD == "BT")
+                                    {
+                                        Reels.singleton.burgerStates[strip].reset = true;
+                                    }
+                                }
+                                else
+                                {
+                                    resetSymbol(symbol, stripSection[toDisplay - 1]);
                                 }
                             }
                             else

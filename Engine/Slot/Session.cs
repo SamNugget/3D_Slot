@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -66,16 +67,21 @@ namespace Slot
 
             // request result from server
             spinResult = null;
-            singleton.server.requestResult(singleton, Money.bet);
+
+            Reels.BurgerState[] burgerStates = Reels.singleton.burgerStates;
+            Reels.BurgerState[] burgerStatesCopy = new Reels.BurgerState[burgerStates.Length];
+            Array.Copy(burgerStates, burgerStatesCopy, burgerStates.Length);
 
             // start spinning the reels
             Reels.startSpin();
 
-            // wait for server
+            // request and wait for result from server
+            singleton.server.requestResult(singleton, Money.bet, burgerStatesCopy);
             yield return _waitForResult();
 
             // update (back-end) balance
             Money.updateBalance(spinResult.winnings);
+            Reels.singleton.burgerStates = spinResult.burgerStates;
 
             // wait for spinning to stop
             yield return Reels.waitForLand();

@@ -10,7 +10,7 @@ namespace MockServer
     public class Server : MonoBehaviour, IServer
     {
         // todo: interface to be implemented in connection class
-        public void requestResult(ISlotClient client, float bet)
+        public void requestResult(ISlotClient client, float bet, Reels.BurgerState[] burgerStates)
         {
             List<SymbolType[]> strips = ReelsData.strips;
             int columns = strips.Count;
@@ -21,9 +21,26 @@ namespace MockServer
             string[][] symbols = new string[columns][];
             for (int i = 0; i < strips.Count; i++)
             {
-                int reelPos = UnityEngine.Random.Range(0, strips[i].Length);
+                int reelPos;
+
+                // forced
+                if (burgerStates[i].reset)
+                {
+                    reelPos = 0;
+                    symbols[i] = new string[] { "BB" };
+                    burgerStates[i].reset = false;
+                    
+                    burgerStates[i].height = 1;
+                }
+                // random
+                else
+                {
+                    reelPos = UnityEngine.Random.Range(0, strips[i].Length);
+                    symbols[i] = ReelsData.getSection(i, reelPos, Model.rows);
+                    
+                    burgerStates[i].height++;
+                }
                 reelPositions[i] = reelPos;
-                symbols[i] = ReelsData.getSection(i, reelPos, Model.rows);
             }
 
 
@@ -35,7 +52,8 @@ namespace MockServer
                 reelPositions = reelPositions,
                 winnings = _calculateWinnings(lineWins),
                 symbols = symbols,
-                lineWins = lineWins
+                lineWins = lineWins,
+                burgerStates = burgerStates
             };
             client.recieveResult(result);
         }
