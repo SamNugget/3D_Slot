@@ -21,8 +21,31 @@ namespace Slot
             }
         }
 
+        public enum Direction : int
+        {
+            LEFT = 0,
+            RIGHT = 1,
+            UP = 2,
+            DOWN = 3
+        }
+
         [SerializeField] private Reel[] reels;
         [SerializeField] private float _spinDelay;
+        public Direction direction = Direction.DOWN;
+        public static Vector2 directionVector
+        {
+            get
+            {
+                Vector2 size = Symbols.size;
+                switch (singleton.direction)
+                {
+                    case Direction.LEFT: return new Vector2(-1 * size.x, 0);
+                    case Direction.RIGHT: return new Vector2(1 * size.x, 0);
+                    case Direction.UP: return new Vector2(0, 1 * size.y);
+                    default: return new Vector2(0, -1 * size.y);
+                }
+            }
+        }
         public static float spinDelay { get { return singleton._spinDelay; } }
         [SerializeField] private float spinSpeed;
         [SerializeField] private Color dimmedColour;
@@ -39,12 +62,11 @@ namespace Slot
             Reel[] reels = singleton.reels;
             int[] stagger = ReelsData.stagger;
             int cumStagger = 0;
-            float speed = singleton.spinSpeed * Symbols.size.y;
             for (int i = 0; i < reels.Length; i++)
             {
                 Reel reel = reels[i];
                 cumStagger += stagger[i];
-                reel.StartCoroutine(reel.spin(spinDelay, cumStagger, speed));
+                reel.StartCoroutine(reel.spin(spinDelay, cumStagger, singleton.spinSpeed));
             }
         }
 
@@ -68,9 +90,9 @@ namespace Slot
             _isSpinning = false;
         }
 
-        public void setSymbolVisibility(bool visible)
+        public static void setSymbolVisibility(bool visible)
         {
-            foreach (Reel r in reels)
+            foreach (Reel r in singleton.reels)
             {
                 r.setSymbolVisibility(visible);
             }
@@ -111,17 +133,8 @@ namespace Slot
 
         public override void build()
         {
-            StartCoroutine(_build());
-        }
-
-        private IEnumerator _build()
-        {
             foreach (Reel r in reels)
                 r.build();
-
-            setSymbolVisibility(false);
-            yield return new WaitForSeconds(8f); // this is not very clean
-            setSymbolVisibility(true);
             Session.isBlocked = false;
         }
     }

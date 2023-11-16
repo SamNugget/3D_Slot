@@ -17,7 +17,7 @@ namespace Slot
             i.enabled = true;
             i.sprite = newType.sprite;
 
-            transform.localPosition += new Vector3(0f, (reelHeight + 2) * Symbols.size.y);
+            transform.localPosition -= (Vector3)Reels.directionVector * (reelHeight + 2);
         }
 
         public bool visible

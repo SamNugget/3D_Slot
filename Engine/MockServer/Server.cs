@@ -14,6 +14,7 @@ namespace MockServer
         {
             List<SymbolType[]> strips = ReelsData.strips;
             int columns = strips.Count;
+            int rows = Model.rows;
 
 
             // generate reel positions
@@ -23,7 +24,7 @@ namespace MockServer
             {
                 int reelPos = UnityEngine.Random.Range(0, strips[i].Length);
                 reelPositions[i] = reelPos;
-                symbols[i] = ReelsData.getSection(i, reelPos, Model.rows);
+                symbols[i] = ReelsData.getSection(i, reelPos, rows);
             }
 
 
@@ -42,7 +43,10 @@ namespace MockServer
 
         private LineWin[] _findLineWins(string[][] symbols)
         {
-            int[][,] patterns = Patterns.patterns;
+            int columns = symbols.Length;
+            int rows = Model.rows;
+
+            int[][,] patterns = Patterns.getPatterns(columns, rows);
             SymbolType[] symbolTypes = Symbols.getSymbolTypes();
 
             List<LineWin> lineWins = new List<LineWin>();
@@ -54,18 +58,16 @@ namespace MockServer
                 for (int patternIndex = 0; patternIndex < patterns.Length; patternIndex++)
                 {
                     int[,] pattern = patterns[patternIndex];
-                    Debug.Log("pattern:" + patternIndex + " lenx:" + pattern.GetLength(1) + " leny:" + pattern.GetLength(0));
 
-                    for (int x = 0; x < pattern.GetLength(1); x++)
+                    for (int x = 0; x < columns; x++)
                     {
-                        for (int y = 0; y < pattern.GetLength(0); y++)
+                        for (int y = 0; y < rows; y++)
                         {
-                            Debug.Log("pattern:" + patternIndex + " x:" + x + " y:" + y);
-                            if (pattern[y, x] == 1)
+                            if (pattern[x, y] == 1)
                             {
                                 if (symbols[x][y] != typeID)
                                 {
-                                    x = pattern.GetLength(1);
+                                    x = columns;
                                     break;
                                 }
                                 positions.Add(new int[] { x, y });

@@ -19,15 +19,13 @@ namespace Slot
 
         public override void build()
         {
-            Vector2 size = Symbols.size;
-
             symbols = new List<Symbol>();
             for (int i = 0; i < height + 2; i++)
             {
                 Symbol s = createSymbol(Symbols.getWeightedRandom());
                 symbols.Insert(i, s);
 
-                Vector3 pos = new Vector3(0f, (i - 1) * -size.y, 0f);
+                Vector3 pos = Reels.directionVector * (-1.5f + i);
                 s.transform.localPosition = pos;
             }
         }
@@ -62,21 +60,25 @@ namespace Slot
             isSpinning = true;
 
 
-            int toDisplay = height + 1; // includes the one above
-            float yMin = toDisplay * -Symbols.size.y;
+            Vector2 dirVector = Reels.directionVector;
+            bool positive = dirVector.x > 0 || dirVector.y > 0;
+
+            int displayed = (height + 1);
+            Vector2 limit = (displayed - 0.5f) * dirVector;
 
             while (isSpinning)
             {
                 float change = speed * Time.deltaTime;
+                Vector2 changeVector = (Vector3)dirVector * change;
 
                 for (int i = 0; i < symbols.Count; i++)
                 {
                     // move each symbol
                     Symbol symbol = symbols[i];
-                    symbol.transform.localPosition -= new Vector3(0f, change, 0f);
+                    symbol.transform.localPosition += (Vector3)changeVector;
 
                     // check if it has gone too far
-                    if (symbol.transform.localPosition.y < yMin)
+                    if (exceedsLimit(symbol, limit, positive))
                     {
                         if (delay > 0f || Session.spinResult == null)
                         {
@@ -90,12 +92,12 @@ namespace Slot
                         else
                         {
                             int reelPosition = Session.spinResult.reelPositions[strip];
-                            SymbolType[] stripSection = ReelsData.getSectionAsTypes(strip, reelPosition, toDisplay);
+                            SymbolType[] stripSection = ReelsData.getSectionAsTypes(strip, reelPosition, displayed);
 
-                            if (toDisplay > 0)
+                            if (displayed > 0)
                             {
-                                resetSymbol(symbol, stripSection[toDisplay - 1]);
-                                toDisplay--;
+                                resetSymbol(symbol, stripSection[displayed - 1]);
+                                displayed--;
                             }
                             else
                             {
@@ -118,15 +120,30 @@ namespace Slot
             }
 
 
-            yield return _snap();
+            Reels.Direction direction = Reels.singleton.direction;
+            bool vertical = direction == Reels.Direction.UP || direction == Reels.Direction.DOWN;
+
+            yield return _snap(vertical);
         }
 
-        private IEnumerator _snap()
+        private static bool exceedsLimit(Symbol symbol, Vector2 limit, bool positive)
         {
-            float offset = symbols[0].transform.localPosition.y;
-            foreach (Symbol s in symbols)
+            Vector2 position = symbol.transform.localPosition;
+            return positive ? (position.x > limit.x || position.y > limit.y) :
+                (position.x < -limit.x || position.y < -limit.y);
+        }
+
+        private IEnumerator _snap(bool vertical)
+        {
+            Vector2 dirVector = Reels.directionVector;
+
+            //Vector2 position = symbols[0].transform.localPosition;
+            //Vector2 offset = vertical ? new Vector2(0, -position.y) : new Vector2(-position.x, 0);
+
+            for (int i = 0; i < height + 2; i++)
             {
-                s.transform.localPosition -= new Vector3(0, offset);
+                Vector3 pos = dirVector * (0.5f + i);
+                symbols[i].transform.localPosition = pos;
             }
 
             // todo: gradual return
