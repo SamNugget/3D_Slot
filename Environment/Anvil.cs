@@ -9,7 +9,10 @@ public class Anvil : Ingredient
         Ingredient i = collision.gameObject.GetComponent<Ingredient>();
         if (i != null)
         {
-            i.splat();
+            if (i.strip == strip)
+            {
+                i.splat();
+            }
         }
     }
 }

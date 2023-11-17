@@ -101,6 +101,7 @@ namespace Slot
 
                                     Transform spawnPoint = Reels.singleton.ingredientSpawnPoints[strip];
                                     Transform t = Instantiate(symbolType.ingredientFab, spawnPoint).transform;
+                                    t.GetComponent<Ingredient>().strip = strip;
                                     if (symbolType.randomRotation)
                                     {
                                         t.localRotation = Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 0f));

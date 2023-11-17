@@ -13,8 +13,8 @@ public class Splattable : Ingredient
         if (pS)
         {
             pS.Emit(particleCount);
-            GetComponent<Collider>().enabled = false;
-            transform.GetChild(0).gameObject.SetActive(false);
+            //GetComponent<Collider>().enabled = false;
+            //transform.GetChild(0).gameObject.SetActive(false);
             StartCoroutine(_destroy());
         }
         else
